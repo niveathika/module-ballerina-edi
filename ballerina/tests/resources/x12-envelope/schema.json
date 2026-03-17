@@ -1,0 +1,146 @@
+{
+    "name": "X12_278_Envelope",
+    "tag": "X12_278_Envelope",
+    "delimiters": {
+        "segment": "~",
+        "field": "*",
+        "component": ":",
+        "subcomponent": "NOT_USED",
+        "repetition": "NOT_USED"
+    },
+    "ignoreSegments": [],
+    "preserveEmptyFields": true,
+    "includeSegmentCode": true,
+    "envelope": {
+        "interchange": {
+            "header": [
+                {
+                    "code": "ISA",
+                    "tag": "InterchangeControlHeader",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "authorization_information_qualifier", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "authorization_information", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "security_information_qualifier", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "security_information", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_id_qualifier_sender", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_sender_id", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_id_qualifier_receiver", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_receiver_id", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_date", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_time", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "repetition_separator", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_control_version_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_control_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "acknowledgment_requested", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "usage_indicator", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "component_element_separator", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ],
+            "trailer": [
+                {
+                    "code": "IEA",
+                    "tag": "InterchangeControlTrailer",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "number_of_included_functional_groups", "repeat": false, "required": true, "truncatable": true, "dataType": "int", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_control_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ]
+        },
+        "group": {
+            "header": [
+                {
+                    "code": "GS",
+                    "tag": "FunctionalGroupHeader",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "functional_identifier_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "application_senders_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "application_receivers_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "date", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "time", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "group_control_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "responsible_agency_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "version_release_industry_identifier_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ],
+            "trailer": [
+                {
+                    "code": "GE",
+                    "tag": "FunctionalGroupTrailer",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "number_of_transaction_sets_included", "repeat": false, "required": true, "truncatable": true, "dataType": "int", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "group_control_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ]
+        },
+        "transaction": {
+            "header": [
+                {
+                    "code": "ST",
+                    "tag": "TransactionSetHeader",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "transaction_set_identifier_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "transaction_set_control_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "implementation_convention_reference", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ],
+            "trailer": [
+                {
+                    "code": "SE",
+                    "tag": "TransactionSetTrailer",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "number_of_included_segments", "repeat": false, "required": true, "truncatable": true, "dataType": "int", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "transaction_set_control_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ]
+        }
+    },
+    "segments": [
+        {
+            "code": "BHT",
+            "tag": "BeginningOfHierarchicalTransaction",
+            "truncatable": true,
+            "minOccurances": 1,
+            "maxOccurances": 1,
+            "fields": [
+                {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "hierarchical_structure_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "transaction_set_purpose_code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "reference_identification", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "date", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "time", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "transaction_type_code", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+            ]
+        }
+    ],
+    "segmentDefinitions": {}
+}

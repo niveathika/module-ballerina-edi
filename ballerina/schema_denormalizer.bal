@@ -19,6 +19,13 @@ isolated function denormalizeSchema(json schema) returns Error? {
         return error Error("Schema does not contain segments.");
     }
     check denormalizeSegments(segments, segmentDefinitions);
+
+    // Denormalize envelope segments if present
+    json? envelope = schema["envelope"];
+    if envelope is map<json> {
+        check denormalizeEnvelope(envelope, segmentDefinitions);
+    }
+
     _ = schema.remove("segmentDefinitions");
 }
 
@@ -53,5 +60,22 @@ isolated function denormalizeSegments(json[] segments, map<json> defs) returns E
         if childSegments is json[] {
             check denormalizeSegments(childSegments, defs);
         }
-    }    
+    }
+}
+
+isolated function denormalizeEnvelope(map<json> envelope, map<json> defs) returns Error? {
+    string[] levels = ["interchange", "group", "transaction"];
+    foreach string level in levels {
+        json? levelJson = envelope[level];
+        if levelJson is map<json> {
+            json? header = levelJson["header"];
+            if header is json[] {
+                check denormalizeSegments(header, defs);
+            }
+            json? trailer = levelJson["trailer"];
+            if trailer is json[] {
+                check denormalizeSegments(trailer, defs);
+            }
+        }
+    }
 }

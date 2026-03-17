@@ -23,15 +23,33 @@ type EdiContext record {|
 |};
 
 # Reads the given EDI text according to the provided schema.
+# When the schema includes an `envelope`, envelope segments are skipped and only
+# the transaction body `segments` are parsed. For old schemas without `envelope`,
+# all `segments` are parsed as before.
 #
 # + ediText - EDI text to be read
 # + schema - Schema of the EDI text
 # + return - JSON variable containing EDI data. Error if the reading fails.
 public isolated function fromEdiString(string ediText, EdiSchema schema) returns json|Error {
     EdiContext context = {schema};
-    EdiUnitSchema[] currentMapping = context.schema.segments;
     context.ediText = check splitSegments(ediText, context.schema.delimiters.segment);
-    EdiSegmentGroup rootGroup = check readSegmentGroup(currentMapping, context, true);
+
+    EdiEnvelopeSchema? envelope = schema.envelope;
+    if envelope is EdiEnvelopeSchema {
+        // Skip envelope headers: interchange, group (if present), transaction
+        _ = check readSegmentGroup(envelope.interchange.header, context, false);
+        EdiEnvelopeLevel? group = envelope.group;
+        if group is EdiEnvelopeLevel {
+            _ = check readSegmentGroup(group.header, context, false);
+        }
+        _ = check readSegmentGroup(envelope.'transaction.header, context, false);
+        // Parse body segments only
+        EdiSegmentGroup body = check readSegmentGroup(schema.segments, context, false);
+        return body;
+    }
+
+    // Old path: no envelope, parse everything in segments
+    EdiSegmentGroup rootGroup = check readSegmentGroup(schema.segments, context, true);
     return rootGroup;
 }
 

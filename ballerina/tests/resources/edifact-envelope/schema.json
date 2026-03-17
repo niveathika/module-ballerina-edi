@@ -1,0 +1,156 @@
+{
+    "name": "ORDERS_Envelope",
+    "delimiters": {
+        "segment": "'",
+        "field": "+",
+        "component": ":",
+        "repetition": "^",
+        "decimalSeparator": "."
+    },
+    "preserveEmptyFields": false,
+    "ignoreSegments": ["UNA"],
+    "envelope": {
+        "interchange": {
+            "header": [
+                {
+                    "code": "UNB",
+                    "tag": "InterchangeHeader",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {
+                            "tag": "syntax_identifier",
+                            "repeat": false,
+                            "required": true,
+                            "truncatable": true,
+                            "dataType": "composite",
+                            "startIndex": -1,
+                            "length": -1,
+                            "components": [
+                                {"tag": "syntax_id", "required": true, "dataType": "string", "subcomponents": []},
+                                {"tag": "syntax_version", "required": true, "dataType": "string", "subcomponents": []}
+                            ]
+                        },
+                        {
+                            "tag": "interchange_sender",
+                            "repeat": false,
+                            "required": true,
+                            "truncatable": true,
+                            "dataType": "composite",
+                            "startIndex": -1,
+                            "length": -1,
+                            "components": [
+                                {"tag": "sender_identification", "required": true, "dataType": "string", "subcomponents": []},
+                                {"tag": "identification_code_qualifier", "required": false, "dataType": "string", "subcomponents": []}
+                            ]
+                        },
+                        {
+                            "tag": "interchange_recipient",
+                            "repeat": false,
+                            "required": true,
+                            "truncatable": true,
+                            "dataType": "composite",
+                            "startIndex": -1,
+                            "length": -1,
+                            "components": [
+                                {"tag": "recipient_identification", "required": true, "dataType": "string", "subcomponents": []},
+                                {"tag": "identification_code_qualifier", "required": false, "dataType": "string", "subcomponents": []}
+                            ]
+                        },
+                        {
+                            "tag": "date_and_time_of_preparation",
+                            "repeat": false,
+                            "required": true,
+                            "truncatable": true,
+                            "dataType": "composite",
+                            "startIndex": -1,
+                            "length": -1,
+                            "components": [
+                                {"tag": "date", "required": true, "dataType": "string", "subcomponents": []},
+                                {"tag": "time", "required": true, "dataType": "string", "subcomponents": []}
+                            ]
+                        },
+                        {"tag": "interchange_control_reference", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ],
+            "trailer": [
+                {
+                    "code": "UNZ",
+                    "tag": "InterchangeTrailer",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_control_count", "repeat": false, "required": true, "truncatable": true, "dataType": "int", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "interchange_control_reference", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ]
+        },
+        "transaction": {
+            "header": [
+                {
+                    "code": "UNH",
+                    "tag": "MessageHeader",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "message_reference_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {
+                            "tag": "message_identifier",
+                            "repeat": false,
+                            "required": true,
+                            "truncatable": true,
+                            "dataType": "composite",
+                            "startIndex": -1,
+                            "length": -1,
+                            "components": [
+                                {"tag": "message_type", "required": true, "dataType": "string", "subcomponents": []},
+                                {"tag": "version", "required": false, "dataType": "string", "subcomponents": []},
+                                {"tag": "release", "required": false, "dataType": "string", "subcomponents": []},
+                                {"tag": "controlling_agency", "required": false, "dataType": "string", "subcomponents": []},
+                                {"tag": "association_assigned_code", "required": false, "dataType": "string", "subcomponents": []}
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "trailer": [
+                {
+                    "code": "UNT",
+                    "tag": "MessageTrailer",
+                    "truncatable": true,
+                    "minOccurances": 1,
+                    "maxOccurances": 1,
+                    "fields": [
+                        {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "number_of_segments", "repeat": false, "required": true, "truncatable": true, "dataType": "int", "startIndex": -1, "length": -1, "components": []},
+                        {"tag": "message_reference_number", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+                    ]
+                }
+            ]
+        }
+    },
+    "segments": [
+        {
+            "code": "BGM",
+            "tag": "BeginningOfMessage",
+            "truncatable": true,
+            "minOccurances": 1,
+            "maxOccurances": 1,
+            "fields": [
+                {"tag": "code", "repeat": false, "required": true, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "document_message_number", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "document_message_name", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []},
+                {"tag": "message_function_code", "repeat": false, "required": false, "truncatable": true, "dataType": "string", "startIndex": -1, "length": -1, "components": []}
+            ]
+        }
+    ],
+    "segmentDefinitions": {}
+}
