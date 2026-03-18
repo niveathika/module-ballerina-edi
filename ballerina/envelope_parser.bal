@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/io;
+
 // X12 ISA segment is fixed-width. Field delimiter is always at position 3.
 // Total ISA segment length is 106 characters.
 const int ISA_SEGMENT_LENGTH = 106;
@@ -24,7 +26,7 @@ const int ISA_SEGMENT_LENGTH = 106;
 #
 # + ediText - Raw EDI text starting at or before the ISA segment
 # + return - Parsed X12Headers, or Error if the ISA segment cannot be found/parsed
-public isolated function peekX12Headers(string ediText) returns X12Headers|Error {
+public isolated function x12HeadersFromEdiString(string ediText) returns X12Headers|Error {
     string trimmed = ediText.trim();
     if !trimmed.startsWith("ISA") {
         return error Error("EDI text does not start with an ISA segment.");
@@ -82,13 +84,25 @@ public isolated function peekX12Headers(string ediText) returns X12Headers|Error
     return {isa, gs};
 }
 
+# Reads X12 interchange headers from a file without requiring a schema.
+#
+# + filePath - Path to the EDI file
+# + return - Parsed X12Headers, or Error if the file cannot be read or ISA cannot be parsed
+public isolated function x12HeadersFromFile(string filePath) returns X12Headers|Error {
+    string|io:Error ediText = io:fileReadString(filePath);
+    if ediText is io:Error {
+        return error Error(string `Failed to read file '${filePath}': ${ediText.message()}`);
+    }
+    return x12HeadersFromEdiString(ediText);
+}
+
 # Reads the EDIFACT UNB interchange header and (if present) the UNH message
 # header from the given EDI text without requiring a schema. Handles the optional
 # UNA service string advice to determine delimiters.
 #
 # + ediText - Raw EDI text starting at or before the UNA/UNB segment
 # + return - Parsed EdifactHeaders, or Error if UNB cannot be found/parsed
-public isolated function peekEdifactHeaders(string ediText) returns EdifactHeaders|Error {
+public isolated function edifactHeadersFromEdiString(string ediText) returns EdifactHeaders|Error {
     string trimmed = ediText.trim();
 
     // EDIFACT defaults
@@ -170,6 +184,18 @@ public isolated function peekEdifactHeaders(string ediText) returns EdifactHeade
     }
 
     return {unb, unh};
+}
+
+# Reads EDIFACT interchange headers from a file without requiring a schema.
+#
+# + filePath - Path to the EDI file
+# + return - Parsed EdifactHeaders, or Error if the file cannot be read or UNB cannot be parsed
+public isolated function edifactHeadersFromFile(string filePath) returns EdifactHeaders|Error {
+    string|io:Error ediText = io:fileReadString(filePath);
+    if ediText is io:Error {
+        return error Error(string `Failed to read file '${filePath}': ${ediText.message()}`);
+    }
+    return edifactHeadersFromEdiString(ediText);
 }
 
 # Parses only the envelope header segments defined in the schema and stops.

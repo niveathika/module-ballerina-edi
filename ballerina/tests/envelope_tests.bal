@@ -17,12 +17,12 @@
 import ballerina/test;
 import ballerina/io;
 
-// ── peekX12Headers ────────────────────────────────────────────────────────────
+// ── x12HeadersFromEdiString ───────────────────────────────────────────────────
 
 @test:Config {}
-function testPeekX12HeadersValid() returns error? {
+function testX12HeadersFromEdiStringValid() returns error? {
     string ediText = check io:fileReadString("tests/resources/x12-envelope/message.edi");
-    X12Headers headers = check peekX12Headers(ediText);
+    X12Headers headers = check x12HeadersFromEdiString(ediText);
     test:assertEquals(headers.isa.senderQualifier, "ZZ");
     test:assertEquals(headers.isa.senderId, "SENDAPP");
     test:assertEquals(headers.isa.receiverQualifier, "ZZ");
@@ -33,9 +33,9 @@ function testPeekX12HeadersValid() returns error? {
 }
 
 @test:Config {}
-function testPeekX12HeadersWithGS() returns error? {
+function testX12HeadersFromEdiStringWithGS() returns error? {
     string ediText = check io:fileReadString("tests/resources/x12-envelope/message.edi");
-    X12Headers headers = check peekX12Headers(ediText);
+    X12Headers headers = check x12HeadersFromEdiString(ediText);
     X12GS? gs = headers.gs;
     test:assertTrue(gs !is (), "GS should be present");
     if gs is X12GS {
@@ -46,31 +46,46 @@ function testPeekX12HeadersWithGS() returns error? {
 }
 
 @test:Config {}
-function testPeekX12HeadersNoGS() returns error? {
+function testX12HeadersFromEdiStringNoGS() returns error? {
     string isaOnly = "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *260101*1200*^*00501*000000001*0*T*:~ST*278*0001~";
-    X12Headers headers = check peekX12Headers(isaOnly);
+    X12Headers headers = check x12HeadersFromEdiString(isaOnly);
     test:assertEquals(headers.isa.senderId, "SENDER");
     test:assertEquals(headers.gs, ());
 }
 
 @test:Config {}
-function testPeekX12HeadersInvalidInput() {
-    X12Headers|Error result = peekX12Headers("UNB+UNOA:1+SENDER+RECEIVER+260101:1200+1'");
+function testX12HeadersFromEdiStringInvalidInput() {
+    X12Headers|Error result = x12HeadersFromEdiString("UNB+UNOA:1+SENDER+RECEIVER+260101:1200+1'");
     test:assertTrue(result is Error, "Expected an error for non-X12 input");
 }
 
 @test:Config {}
-function testPeekX12HeadersTooShort() {
-    X12Headers|Error result = peekX12Headers("ISA*00*SHORT");
+function testX12HeadersFromEdiStringTooShort() {
+    X12Headers|Error result = x12HeadersFromEdiString("ISA*00*SHORT");
     test:assertTrue(result is Error, "Expected an error for truncated ISA");
 }
 
-// ── peekEdifactHeaders ────────────────────────────────────────────────────────
+// ── x12HeadersFromFile ────────────────────────────────────────────────────────
 
 @test:Config {}
-function testPeekEdifactHeadersWithUNA() returns error? {
+function testX12HeadersFromFile() returns error? {
+    X12Headers headers = check x12HeadersFromFile("tests/resources/x12-envelope/message.edi");
+    test:assertEquals(headers.isa.senderId, "SENDAPP");
+    test:assertEquals(headers.isa.controlNumber, "000000001");
+}
+
+@test:Config {}
+function testX12HeadersFromFileNotFound() {
+    X12Headers|Error result = x12HeadersFromFile("tests/resources/nonexistent.edi");
+    test:assertTrue(result is Error, "Expected an error for missing file");
+}
+
+// ── edifactHeadersFromEdiString ──────────────────────────────────────────────
+
+@test:Config {}
+function testEdifactHeadersFromEdiStringWithUNA() returns error? {
     string ediText = check io:fileReadString("tests/resources/edifact-envelope/message.edi");
-    EdifactHeaders headers = check peekEdifactHeaders(ediText);
+    EdifactHeaders headers = check edifactHeadersFromEdiString(ediText);
     test:assertEquals(headers.unb.sender.id, "SENDAPP");
     test:assertEquals(headers.unb.recipient.id, "RECVAPP");
     test:assertEquals(headers.unb.dateAndTime.date, "260101");
@@ -84,17 +99,32 @@ function testPeekEdifactHeadersWithUNA() returns error? {
 }
 
 @test:Config {}
-function testPeekEdifactHeadersWithoutUNA() returns error? {
+function testEdifactHeadersFromEdiStringWithoutUNA() returns error? {
     string ediText = "UNB+UNOA:1+SENDER:ZZ+RECEIVER:ZZ+260101:1200+REF001'UNH+1+INVOIC:D:96A:UN'BGM+380+INV001+9'";
-    EdifactHeaders headers = check peekEdifactHeaders(ediText);
+    EdifactHeaders headers = check edifactHeadersFromEdiString(ediText);
     test:assertEquals(headers.unb.sender.id, "SENDER");
     test:assertEquals(headers.unb.controlRef, "REF001");
 }
 
 @test:Config {}
-function testPeekEdifactHeadersNoUNB() {
-    EdifactHeaders|Error result = peekEdifactHeaders("BGM+380+INV001+9'");
+function testEdifactHeadersFromEdiStringNoUNB() {
+    EdifactHeaders|Error result = edifactHeadersFromEdiString("BGM+380+INV001+9'");
     test:assertTrue(result is Error, "Expected an error when UNB is missing");
+}
+
+// ── edifactHeadersFromFile ───────────────────────────────────────────────────
+
+@test:Config {}
+function testEdifactHeadersFromFile() returns error? {
+    EdifactHeaders headers = check edifactHeadersFromFile("tests/resources/edifact-envelope/message.edi");
+    test:assertEquals(headers.unb.sender.id, "SENDAPP");
+    test:assertEquals(headers.unb.controlRef, "000000001");
+}
+
+@test:Config {}
+function testEdifactHeadersFromFileNotFound() {
+    EdifactHeaders|Error result = edifactHeadersFromFile("tests/resources/nonexistent.edi");
+    test:assertTrue(result is Error, "Expected an error for missing file");
 }
 
 // ── headersFromEdiString ──────────────────────────────────────────────────────
