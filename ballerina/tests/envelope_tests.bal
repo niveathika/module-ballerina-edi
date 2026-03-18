@@ -160,6 +160,23 @@ function testHeadersFromEdiStringOldSchemaShouldError() returns error? {
     }
 }
 
+// ── headersFromEdiFile ──────────────────────────────────────────────────────
+
+@test:Config {}
+function testHeadersFromEdiFileX12() returns error? {
+    EdiSchema schema = check getTestSchema("x12-envelope");
+    json headers = check headersFromEdiFile("tests/resources/x12-envelope/message.edi", schema);
+    map<json> headersMap = check headers.cloneWithType();
+    test:assertTrue(headersMap.hasKey("InterchangeControlHeader"), "Headers should contain InterchangeControlHeader");
+}
+
+@test:Config {}
+function testHeadersFromEdiFileNotFound() returns error? {
+    EdiSchema schema = check getTestSchema("x12-envelope");
+    json|Error result = headersFromEdiFile("tests/resources/nonexistent.edi", schema);
+    test:assertTrue(result is Error, "Expected an error for missing file");
+}
+
 // ── interchangeFromEdiString ──────────────────────────────────────────────────
 
 @test:Config {}
@@ -251,6 +268,23 @@ function testInterchangeFromEdiStringOldSchemaShouldError() returns error? {
     EdiSchema schema = check getTestSchema("x12-278");
     EdiInterchange|Error result = interchangeFromEdiString("ST*278*0001~SE*1*0001~", schema);
     test:assertTrue(result is Error, "Expected an error for old schema without envelope");
+}
+
+// ── interchangeFromEdiFile ──────────────────────────────────────────────────
+
+@test:Config {}
+function testInterchangeFromEdiFileX12() returns error? {
+    EdiSchema schema = check getTestSchema("x12-envelope");
+    EdiInterchange interchange = check interchangeFromEdiFile("tests/resources/x12-envelope/message.edi", schema);
+    map<json> ichHeader = check interchange.interchangeHeader.cloneWithType();
+    test:assertTrue(ichHeader.hasKey("InterchangeControlHeader"), "Should have InterchangeControlHeader");
+}
+
+@test:Config {}
+function testInterchangeFromEdiFileNotFound() returns error? {
+    EdiSchema schema = check getTestSchema("x12-envelope");
+    EdiInterchange|Error result = interchangeFromEdiFile("tests/resources/nonexistent.edi", schema);
+    test:assertTrue(result is Error, "Expected an error for missing file");
 }
 
 // ── fromEdiString with envelope ───────────────────────────────────────────────

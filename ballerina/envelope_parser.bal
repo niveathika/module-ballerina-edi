@@ -250,6 +250,19 @@ public isolated function headersFromEdiString(string ediText, EdiSchema schema) 
     return result;
 }
 
+# Parses only the envelope header segments from an EDI file and stops.
+#
+# + filePath - Path to the EDI file
+# + schema - Schema containing an `envelope` definition
+# + return - JSON representation of the parsed header segments, or Error
+public isolated function headersFromEdiFile(string filePath, EdiSchema schema) returns json|Error {
+    string|io:Error ediText = io:fileReadString(filePath);
+    if ediText is io:Error {
+        return error Error(string `Failed to read file '${filePath}': ${ediText.message()}`);
+    }
+    return headersFromEdiString(ediText, schema);
+}
+
 # Parses the full envelope hierarchy and returns an EdiInterchange.
 # Envelope (headers/trailers) is fail-fast; transaction body is fail-safe
 # (malformed body is preserved as a raw string).
@@ -302,6 +315,19 @@ public isolated function interchangeFromEdiString(string ediText, EdiSchema sche
         return {interchangeHeader, groups, interchangeTrailer};
     }
     return {interchangeHeader, transactions, interchangeTrailer};
+}
+
+# Parses the full envelope hierarchy from an EDI file.
+#
+# + filePath - Path to the EDI file
+# + schema - Schema containing an `envelope` definition
+# + return - Parsed interchange or error
+public isolated function interchangeFromEdiFile(string filePath, EdiSchema schema) returns EdiInterchange|Error {
+    string|io:Error ediText = io:fileReadString(filePath);
+    if ediText is io:Error {
+        return error Error(string `Failed to read file '${filePath}': ${ediText.message()}`);
+    }
+    return interchangeFromEdiString(ediText, schema);
 }
 
 // Parses transactions within the current context until the next segment is not
