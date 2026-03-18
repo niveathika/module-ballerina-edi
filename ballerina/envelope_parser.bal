@@ -88,7 +88,7 @@ public isolated function x12HeadersFromEdiString(string ediText) returns X12Head
 #
 # + filePath - Path to the EDI file
 # + return - Parsed X12Headers, or Error if the file cannot be read or ISA cannot be parsed
-public isolated function x12HeadersFromFile(string filePath) returns X12Headers|Error {
+public isolated function x12HeadersFromEdiFile(string filePath) returns X12Headers|Error {
     string|io:Error ediText = io:fileReadString(filePath);
     if ediText is io:Error {
         return error Error(string `Failed to read file '${filePath}': ${ediText.message()}`);
@@ -190,7 +190,7 @@ public isolated function edifactHeadersFromEdiString(string ediText) returns Edi
 #
 # + filePath - Path to the EDI file
 # + return - Parsed EdifactHeaders, or Error if the file cannot be read or UNB cannot be parsed
-public isolated function edifactHeadersFromFile(string filePath) returns EdifactHeaders|Error {
+public isolated function edifactHeadersFromEdiFile(string filePath) returns EdifactHeaders|Error {
     string|io:Error ediText = io:fileReadString(filePath);
     if ediText is io:Error {
         return error Error(string `Failed to read file '${filePath}': ${ediText.message()}`);
@@ -315,19 +315,6 @@ public isolated function interchangeFromEdiString(string ediText, EdiSchema sche
         return {interchangeHeader, groups, interchangeTrailer};
     }
     return {interchangeHeader, transactions, interchangeTrailer};
-}
-
-# Parses the full envelope hierarchy from an EDI file.
-#
-# + filePath - Path to the EDI file
-# + schema - Schema containing an `envelope` definition
-# + return - Parsed interchange or error
-public isolated function interchangeFromEdiFile(string filePath, EdiSchema schema) returns EdiInterchange|Error {
-    string|io:Error ediText = io:fileReadString(filePath);
-    if ediText is io:Error {
-        return error Error(string `Failed to read file '${filePath}': ${ediText.message()}`);
-    }
-    return interchangeFromEdiString(ediText, schema);
 }
 
 // Parses transactions within the current context until the next segment is not

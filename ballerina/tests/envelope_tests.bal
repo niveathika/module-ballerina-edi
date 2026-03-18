@@ -65,18 +65,18 @@ function testX12HeadersFromEdiStringTooShort() {
     test:assertTrue(result is Error, "Expected an error for truncated ISA");
 }
 
-// ── x12HeadersFromFile ────────────────────────────────────────────────────────
+// ── x12HeadersFromEdiFile ────────────────────────────────────────────────────────
 
 @test:Config {}
 function testX12HeadersFromFile() returns error? {
-    X12Headers headers = check x12HeadersFromFile("tests/resources/x12-envelope/message.edi");
+    X12Headers headers = check x12HeadersFromEdiFile("tests/resources/x12-envelope/message.edi");
     test:assertEquals(headers.isa.senderId, "SENDAPP");
     test:assertEquals(headers.isa.controlNumber, "000000001");
 }
 
 @test:Config {}
 function testX12HeadersFromFileNotFound() {
-    X12Headers|Error result = x12HeadersFromFile("tests/resources/nonexistent.edi");
+    X12Headers|Error result = x12HeadersFromEdiFile("tests/resources/nonexistent.edi");
     test:assertTrue(result is Error, "Expected an error for missing file");
 }
 
@@ -112,18 +112,18 @@ function testEdifactHeadersFromEdiStringNoUNB() {
     test:assertTrue(result is Error, "Expected an error when UNB is missing");
 }
 
-// ── edifactHeadersFromFile ───────────────────────────────────────────────────
+// ── edifactHeadersFromEdiFile ───────────────────────────────────────────────────
 
 @test:Config {}
 function testEdifactHeadersFromFile() returns error? {
-    EdifactHeaders headers = check edifactHeadersFromFile("tests/resources/edifact-envelope/message.edi");
+    EdifactHeaders headers = check edifactHeadersFromEdiFile("tests/resources/edifact-envelope/message.edi");
     test:assertEquals(headers.unb.sender.id, "SENDAPP");
     test:assertEquals(headers.unb.controlRef, "000000001");
 }
 
 @test:Config {}
 function testEdifactHeadersFromFileNotFound() {
-    EdifactHeaders|Error result = edifactHeadersFromFile("tests/resources/nonexistent.edi");
+    EdifactHeaders|Error result = edifactHeadersFromEdiFile("tests/resources/nonexistent.edi");
     test:assertTrue(result is Error, "Expected an error for missing file");
 }
 
@@ -268,23 +268,6 @@ function testInterchangeFromEdiStringOldSchemaShouldError() returns error? {
     EdiSchema schema = check getTestSchema("x12-278");
     EdiInterchange|Error result = interchangeFromEdiString("ST*278*0001~SE*1*0001~", schema);
     test:assertTrue(result is Error, "Expected an error for old schema without envelope");
-}
-
-// ── interchangeFromEdiFile ──────────────────────────────────────────────────
-
-@test:Config {}
-function testInterchangeFromEdiFileX12() returns error? {
-    EdiSchema schema = check getTestSchema("x12-envelope");
-    EdiInterchange interchange = check interchangeFromEdiFile("tests/resources/x12-envelope/message.edi", schema);
-    map<json> ichHeader = check interchange.interchangeHeader.cloneWithType();
-    test:assertTrue(ichHeader.hasKey("InterchangeControlHeader"), "Should have InterchangeControlHeader");
-}
-
-@test:Config {}
-function testInterchangeFromEdiFileNotFound() returns error? {
-    EdiSchema schema = check getTestSchema("x12-envelope");
-    EdiInterchange|Error result = interchangeFromEdiFile("tests/resources/nonexistent.edi", schema);
-    test:assertTrue(result is Error, "Expected an error for missing file");
 }
 
 // ── fromEdiString with envelope ───────────────────────────────────────────────
